@@ -16,10 +16,14 @@ A college/uni administration portal for applications, registration for modules a
 ## Running the Application
 1. cd into main folder
 2. If you are running the application for the first time (if not skip to step 4) install yarn
-```yarn```
-3. Install react-admin
-```yarn add react-admin```
-4. run the following command
+```
+yarn
+```
+4. Install react-admin
+```
+yarn add react-admin
+```
+6. run the following command
 ```
 yarn run dev
 ```
