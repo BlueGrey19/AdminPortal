@@ -16,9 +16,13 @@ A college/uni administration portal for applications, registration for modules a
 
 ## Running the System
 1. cd into main folder
-2. run the following command
+2. If you are running the application for the first time (if not skip to step 4) install yarn
+```yarn```
+3. Install react-admin
+```yarn add react-admin```
+4. run the following command
 ```
 yarn run dev
 ```
-3. Change the port visability from private to public
-4. Open in browser to interact with system
+5. Change the port visability from private to public
+6. Open in browser to interact with system
