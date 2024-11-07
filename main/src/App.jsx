@@ -1,6 +1,7 @@
 import { Admin, EditGuesser, ListGuesser, Resource, ShowGuesser, radiantDarkTheme } from 'react-admin';
 import { PocketBaseProvider } from './ra-pocketbase';
 import { CourseList, CourseShow } from './CourseCat';
+import { ApplicationEdit, ApplicationList, ApplicationShow } from './Applications';
 
 const pbProvider = PocketBaseProvider("https://ghastly-owl-6wwwv56gp6xh464p-8090.app.github.dev")
 
@@ -16,8 +17,8 @@ const App = () => (
       options={{ label: 'Course Catalogue', labelPlural: 'Courses' }}
     />
     <Resource name='applications'
-      list={ListGuesser} show={ShowGuesser}
-      edit={EditGuesser}
+      list={ApplicationList} show={ApplicationShow}
+      edit={ApplicationEdit}
       options={{ label: 'Applications', labelPlural: 'Applications' }}
     />
     <Resource name='module_reg'
