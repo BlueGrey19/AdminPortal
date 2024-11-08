@@ -1,5 +1,5 @@
-import { ChipField, Create, Datagrid, List, NumberField, ReferenceArrayField, ReferenceField, SingleFieldList, TextField } from 'react-admin';
-import { Show, SimpleShowLayout } from 'react-admin';
+import { ChipField, Create, Datagrid, List, NumberField, TabbedForm, TextField, SingleFieldList, TextInput, NumberInput, SelectArrayInput, SelectInput } from 'react-admin';
+import { Show, SimpleShowLayout, ReferenceArrayField, ReferenceArrayInput, ReferenceField, ReferenceInput } from 'react-admin';
 
 export const CourseList = () => (
     <List>
@@ -33,10 +33,28 @@ export const CourseShow = () => (
     </Show>
 );
 
-// Make a Create function to allow admins to make new courses
-// Look at making module seletion a multi-select
+// Fix create 
+// Record not creating in pb
 export const CourseCreate = () => (
     <Create>
-
+        <TabbedForm>
+            <TabbedForm.Tab label="Course Information">
+                <TextInput source="Name" />
+                <ReferenceInput source="Faculty" reference="faculties" >
+                    <SelectInput source="Name" label="Faculty" optionText="Name" />
+                </ReferenceInput>
+                <SelectInput source="Level"
+                    choices={[
+                        { id: 'Undergrad', name: 'Undergraduate' },
+                        { id: 'Postgrad', name: 'Postgraduate' },
+                    ]} />
+                <NumberInput source="Prerequisite_Ave" />
+            </TabbedForm.Tab>
+            <TabbedForm.Tab label="Modules">
+                <ReferenceArrayInput source="Modules" reference="modules" >
+                    <SelectArrayInput optionText="Name" />
+                </ReferenceArrayInput>
+            </TabbedForm.Tab>
+        </TabbedForm>
     </Create>
 );
