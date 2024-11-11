@@ -2,6 +2,7 @@ import { Admin, EditGuesser, ListGuesser, Resource, ShowGuesser, radiantDarkThem
 import { PocketBaseProvider } from './ra-pocketbase';
 import { CourseCreate, CourseList, CourseShow } from './CourseCat';
 import { ApplicationEdit, ApplicationList, ApplicationShow } from './Applications';
+import { Module_regEdit, Module_regList, Module_regShow } from './ModuleReg';
 
 const pbProvider = PocketBaseProvider("https://ghastly-owl-6wwwv56gp6xh464p-8090.app.github.dev")
 
@@ -22,8 +23,8 @@ const App = () => (
       options={{ label: 'Applications', labelPlural: 'Applications' }}
     />
     <Resource name='module_reg'
-      list={ListGuesser} show={ShowGuesser}
-      edit={EditGuesser}
+      list={Module_regList} show={Module_regShow}
+      edit={Module_regEdit}
       options={{ label: 'Module Registration', labelPlural: 'Module_regs' }}
     />
     <Resource name='marks'

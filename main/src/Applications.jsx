@@ -1,5 +1,5 @@
-import React from 'react';
-import { Create, Datagrid, FileField, FileInput, FunctionField, List, SelectInput, useDataProvider, useNotify, useRecordContext, useShowContext } from 'react-admin';
+import React, { useEffect } from 'react';
+import { Create, Datagrid, FileField, FileInput, FunctionField, List, SelectInput, useAuthProvider, useDataProvider, useNotify, useRecordContext, useShowContext } from 'react-admin';
 import { DateField, ReferenceField, Show, SimpleShowLayout, TextField } from 'react-admin';
 import { DateInput, Edit, ReferenceInput, SimpleForm, TextInput } from 'react-admin';
 
@@ -24,7 +24,7 @@ export const ApplicationList = () => (
             <ReferenceField source="Faculty_Choice" reference="faculties" >
                 <TextField source="Name" />
             </ReferenceField>
-            <ReferenceField source="Applicant" reference="users" label="Name">
+            <ReferenceField source="Applicant" reference="users" label="Full Name">
                 <FunctionField render={record => `${record.Name} ${record.Surname}`} />
             </ReferenceField>
             <DateField source="created" />
@@ -34,14 +34,14 @@ export const ApplicationList = () => (
 
 // Fix Show Title
 export const ApplicationShow = (props) => (
-    <Show {...props} title={<CustomTitle />}>
+    <Show {...props} >
         <SimpleShowLayout>
             <TextField source="Status" />
             <TextField source="id" label="Application ID" />
             <ReferenceField source="Applicant" reference="users" label="Applicant ID">
                 <TextField source="id" />
             </ReferenceField>
-            <ReferenceField source="Applicant" reference="users" label="Name">
+            <ReferenceField source="Applicant" reference="users" label="Full Name">
                 <FunctionField render={record => `${record.Name} ${record.Surname}`} />
             </ReferenceField>
             <ReferenceField source="Faculty_Choice" reference="faculties" label="Faculty Choice">
@@ -160,31 +160,70 @@ export const ApplicationEdit = (props) => {
     );
 };
 
-export const ApplicationCreate = () => (
-    <Create>
-        <SimpleForm>
-            <SelectInput id="Status"
-                source="Status" defaultValue={'Pending'}
-                choices={[
-                    { id: 'Pending', name: 'Pending' },
-                    { id: 'Accepted', name: 'Accepted' },
-                    { id: 'Rejected', name: 'Rejected' },
-                ]}
-                disabled
-            />
-            <ReferenceInput source="Applicant" reference="users" label="Applicant ID">
-                <TextInput source="id" disabled />
-            </ReferenceInput>
-            <ReferenceField source="Name" reference="users" label="Name">
-                <FunctionField render={record => `${record.Name} ${record.Surname}`} />
-            </ReferenceField>
-            <ReferenceField source="Faculty_Choice" reference="faculties" label="Faculty Choice">
-                <SelectInput source="Name" optionText="Name" />
-            </ReferenceField>
-            <ReferenceField source="Course_Choice" reference="courses" label="Course Choice">
-                <SelectInput source="Name" optionText="Name" />
-            </ReferenceField>
-            <DateInput source="Past_Results" />
-        </SimpleForm>
-    </Create>
-);
+export const ApplicationCreate = () => {
+    // Get the current user id
+    // assign the user id to the applicant field
+    const dataProvider = useDataProvider();
+    const authProvider = useAuthProvider();
+    const [userID, setUserID] = useState('');
+    // get selcted faculty to filter courses
+    const [selectedFaculty, setSelectedFaculty] = useState('');
+    const [allCourses, setAllCourses] = useState([]);
+    const [filteredCourses, setFilteredCourses] = useState([]);
+
+    // Get the current user id
+    useEffect(() => {
+        authProvider.getIdentity().then(identify => {
+            setUserID(identify.id);
+            console.log("Current User ID: ", identify.id);
+        });
+    }, [authProvider]);
+
+    // Assign user id to the applicant field
+    const assignUserId = async (data) => {
+        console.log("Data: ", data);
+        console.log("User ID: ", userID);
+        try {
+            // Assign the user id to the applicant field
+            data.Applicant = userID;
+            console.log("Applicant ID: ", data.Applicant);
+            // Create the application record
+            await dataProvider.create('applications', {
+                data: data
+            });
+        } catch (error) {
+            console.error("Error creating application: ", error);
+        }
+    };
+
+    // Fileter courses based on selected faculty
+
+    return (
+        <Create>
+            <SimpleForm onSubmit={assignUserId}>
+                <SelectInput id="Status"
+                    source="Status" defaultValue={'Pending'}
+                    choices={[
+                        { id: 'Pending', name: 'Pending' },
+                        { id: 'Accepted', name: 'Accepted' },
+                        { id: 'Rejected', name: 'Rejected' },
+                    ]}
+                    disabled
+                />
+                <ReferenceInput source="Applicant" reference="users" label="Applicant ID">
+                    <TextInput source="id" disabled />
+                </ReferenceInput>
+                <ReferenceField source="Name" reference="users" label="Name">
+                    <FunctionField render={record => `${record.Name} ${record.Surname}`} />
+                </ReferenceField>
+                <ReferenceField source="Faculty_Choice" reference="faculties" label="Faculty Choice">
+                    <SelectInput source="Name" optionText="Name" />
+                </ReferenceField>
+                <ReferenceField source="Course_Choice" reference="courses" label="Course Choice">
+                    <SelectInput source="Name" optionText="Name" />
+                </ReferenceField>
+                <DateInput source="Past_Results" />
+            </SimpleForm>
+        </Create>
+    );
+};
