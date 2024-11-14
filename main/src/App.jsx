@@ -3,6 +3,7 @@ import { PocketBaseProvider } from './ra-pocketbase';
 import { CourseCreate, CourseList, CourseShow } from './CourseCat';
 import { ApplicationEdit, ApplicationList, ApplicationShow } from './Applications';
 import { Module_regEdit, Module_regList, Module_regShow } from './ModuleReg';
+import LoginScreen from './Login';
 
 const pbProvider = PocketBaseProvider("https://ghastly-owl-6wwwv56gp6xh464p-8090.app.github.dev")
 
@@ -11,6 +12,7 @@ const App = () => (
     dataProvider={pbProvider.dataProvider}
     theme={radiantDarkTheme}
     title={'Admin Portal'}
+    loginPage={LoginScreen}
   >
     <Resource name='courses'
       list={CourseList} show={CourseShow}
